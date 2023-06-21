@@ -21,11 +21,13 @@ def main():
 
     args = parser.parse_args()
 
-    if not os.path.exists(args.pointcloud):
+    if not os.path.exists(args.csv):
         print("couldnt find csv_file, exiting")
         os._exit(1)
     
     df = pd.read_csv(args.csv)
+
+    # TODO: change to lat/long so Global CS can be used on the Rover
 
     # get SW point info, assumes only one position
     df_east = df[["Easting"]].values[0][0]
@@ -40,7 +42,10 @@ def main():
 
     df = pd.DataFrame(coords_el, columns=["Easting", "Northing", "Elevation"])
     
-    df['Name'] = df.index
+    # start at 1
+    df['Name'] = df.index + 1
+    # remove first row as this points has been recorded already
+    df = df.iloc[1:]
 
     df.to_csv("grid.csv", index=False)
 
