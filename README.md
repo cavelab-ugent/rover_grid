@@ -11,6 +11,7 @@ python create_grid.py --csv /path/to/csvfile --gridsize GRIDSIZE --ew_points EW_
 - -g/--gridsize: desired grid size in meters
 - -e/--ew_points: desired number of points in East/West direction
 - -n/--ns_points: desired number of points in North/South direction
-- -a/--angle: angle with NS axis, rotated clockwise around SW corner
+- -a/--angle: angle with NS axis, rotated clockwise around SW corner (optional)
+- --add_first: also write the first sw point the grid is based on to new csv (optional)
 
 4. Import created grid.csv into Rover project

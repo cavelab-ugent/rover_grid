@@ -31,13 +31,17 @@ def main():
     parser.add_argument("-g", "--gridsize", type=int, required=True)
     parser.add_argument("-e", "--ew_points", type=int, required=True)
     parser.add_argument("-n", "--ns_points", type=int, required=True)
-    parser.add_argument("-a", "--angle", type=float, required=True)
+    parser.add_argument("-a", "--angle", type=float)
+    parser.add_argument("--add_first", action='store_true')
 
     args = parser.parse_args()
 
     if not os.path.exists(args.csv):
         print("couldnt find csv_file, exiting")
         os._exit(1)
+        
+    if args.angle is None:
+        args.angle = 0
 
     print(f"Laying out {args.ew_points} points in east-west direction and {args.ns_points} in north-south direction.")
     print(f"Using a gridsize of {args.gridsize} m. and angle of {args.angle} deg. (angle with n-s axis in clockwise direction around sw point)")
@@ -50,6 +54,7 @@ def main():
     df_east = df[["Easting"]].values[0][0]
     df_north = df[["Northing"]].values[0][0]
     df_elevation = df[["Elevation"]].values[0][0]
+    
 
     coords = sw_corner_to_grid(np.array([df_east, df_north]), args.gridsize, args.ew_points, args.ns_points, args.angle)
 
@@ -67,8 +72,10 @@ def main():
     
     # start at 1
     df['Name'] = df.index + 1
+
     # remove first row as this points has been recorded already
-    df = df.iloc[1:]
+    if not args.add_first:
+        df = df.iloc[1:]
 
     df.to_csv("grid.csv", index=False)
 
