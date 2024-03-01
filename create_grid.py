@@ -33,6 +33,7 @@ def main():
     parser.add_argument("-n", "--ns_points", type=int, required=True)
     parser.add_argument("-a", "--angle", type=float)
     parser.add_argument("--add_first", action='store_true')
+    parser.add_argument("-o", "--out_file", type=str, default=None)
 
     args = parser.parse_args()
 
@@ -77,7 +78,10 @@ def main():
     if not args.add_first:
         df = df.iloc[1:]
 
-    df.to_csv("grid.csv", index=False)
+    if args.out_file is not None:
+        df.to_csv(args.out_file, index=False)
+    else:
+        df.to_csv("grid_generated.csv", index=False)
 
 
 if __name__ == "__main__":
