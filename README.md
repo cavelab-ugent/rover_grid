@@ -2,9 +2,12 @@
 
 1. Install dependencies: Python 3 + ``` pip/conda install pandas ```
 2. Export Rover project to csv after registering SW corner
-3.
+3. Two options:
+
+Create grid from SW point:
+
 ```
-python create_grid.py --csv /path/to/csvfile --out_file /path/to/outfile --gridsize GRIDSIZE --ew_points EW_POINTS --ns_points NS_POINTS [--angle ANGLE] [--add_first]
+python create_grid.py --csv /path/to/csvfile --gridsize GRIDSIZE --ew_points EW_POINTS --ns_points NS_POINTS [--out_file /path/to/outfile] [--angle ANGLE] [--keep_corner] 
 ```
 
 - -c/--csv: path to exported csv file
@@ -12,7 +15,20 @@ python create_grid.py --csv /path/to/csvfile --out_file /path/to/outfile --grids
 - -e/--ew_points: desired number of points in East/West direction
 - -n/--ns_points: desired number of points in North/South direction
 - (optional) -a/--angle: angle with NS axis, rotated clockwise around SW corner 
-- (optional) --add_first: also write the first sw point the grid is based on to new csv 
+- (optional) --keep_corner: also keeps the first sw point the grid is based on in the new csv file
 - (optional) -o/--out_file: path of output file
 
-4. Import created grid.csv into Rover project
+
+Create grid from 4 corner points
+
+```
+python create_grid_4_corners.py --csv /path/to/csvfile  --n_points N_POINTS [--out_file /path/to/outfile] [--keep_corners]
+```
+
+- -c/--csv: path to exported csv file
+- -n/--n_points: desired number of points per line (NOTE: different number of points not supported yet, if you need this send me an email)
+- (optional) --keep_corners: also keeps the corners the grid is based on in the new csv file
+- (optional) -o/--out_file: path of output file
+
+
+4. Import grid_generated.csv/output_name.csv into Rover project (also see manual on Teams)

@@ -32,7 +32,7 @@ def main():
     parser.add_argument("-e", "--ew_points", type=int, required=True)
     parser.add_argument("-n", "--ns_points", type=int, required=True)
     parser.add_argument("-a", "--angle", type=float)
-    parser.add_argument("--add_first", action='store_true')
+    parser.add_argument("--keep_corner", action='store_true')
     parser.add_argument("-o", "--out_file", type=str, default=None)
 
     args = parser.parse_args()
@@ -71,12 +71,12 @@ def main():
 
     df = pd.DataFrame(coords_el, columns=["Easting", "Northing", "Elevation"])
     
-    # start at 1
-    df['Name'] = df.index + 1
 
     # remove first row as this points has been recorded already
-    if not args.add_first:
+    if not args.keep_corner:
         df = df.iloc[1:]
+
+    df['Name'] = df.index
 
     if args.out_file is not None:
         df.to_csv(args.out_file, index=False)
