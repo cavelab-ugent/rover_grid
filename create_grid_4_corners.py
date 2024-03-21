@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import argparse
 import os
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import math as m
 
 def grid_from_corners(corners, n_points):
@@ -52,7 +52,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--csv", type=str, required=True)
     parser.add_argument("-n", "--n_points", type=int, required=True)
-    parser.add_argument("--keep_corners", action='store_true', help="whether to keep the already recorded/marked corners in the output csv file")
     parser.add_argument("-o", "--out_file", type=str, default=None)
 
     args = parser.parse_args()
@@ -62,7 +61,7 @@ def main():
         os._exit(1)
 
     print(f"Laying out grid based on four corners of {args.n_points} points per line.")
-    print(f'This method "squeezes" a perfectly rectangular grid into the quadriliteral formed by the four corners. If the plot is very crooked, scan positions might be a bit sparse at the extremes.' )
+    print(f'INFO: This method "squeezes" a perfectly rectangular grid into the quadriliteral formed by the four corners. If the plot is very crooked, scan positions might be a bit sparse at the extremes.' )
     
     df = pd.read_csv(args.csv)
 
@@ -84,16 +83,14 @@ def main():
     coords_el = np.hstack((coords, elevation_arr))
 
     df = pd.DataFrame(coords_el, columns=["Easting", "Northing", "Elevation"])
-    
-
-    # remove first row as this points has been recorded already
-    if not args.keep_corners:
-        df = df.iloc[4:]
     df['Name'] = df.index
+
     if args.out_file is not None:
-        df.to_csv(args.out_file, index=False)
+        out_path = args.out_file
     else:
-        df.to_csv("grid_generated.csv", index=False)
+        out_path = "grid_generated.csv"
+    df.to_csv(out_path, index=False)
+    print(f"Done, output csv saved at {out_path}")
 
 
 if __name__ == "__main__":
