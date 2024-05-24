@@ -65,6 +65,13 @@ def main():
     
     df = pd.read_csv(args.csv)
 
+    if len(df.index) < 4:
+        print(f"ERROR: CSV file contains only {len(df.index)} rows, need 4 corners for this script, exiting.")
+        os._exit(1)
+    if len(df.index) > 4:
+        print(f"WARNING: CSV file contains more than 4 rows ({len(df.index)}), using first 4")
+        df = df.head(4)
+
     # TODO: get four corners out
     df_corners = df[["Easting", "Northing"]].values
     df_elevation = df[["Elevation"]].values[0][0]

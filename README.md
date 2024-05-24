@@ -1,4 +1,7 @@
-# Script to generate a grid from SW position using Rover.
+# Emlid rover grid scripts
+
+This repo contains scripts to generate a scanning grid using an Emlid Reach rover.
+Instructions on rover usage can be found in the included pdf, instructions to run the grid setup can be found below.
 
 1. Install dependencies: Python 3 + ``` pip/conda install pandas ```
 2. Export Rover project to csv after registering SW corner
