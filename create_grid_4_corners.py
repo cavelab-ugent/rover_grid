@@ -5,10 +5,10 @@ import os
 # import matplotlib.pyplot as plt
 import math as m
 
-def grid_from_corners(corners, n_points):
+def grid_from_4_corners(corners, n_points_x, n_points_y):
     # create grid with n_points in unit square
-    x = np.linspace(0, 1, n_points)
-    y = np.linspace(0, 1, n_points)
+    x = np.linspace(0, 1, n_points_x)
+    y = np.linspace(0, 1, n_points_y)
     xv, yv = np.meshgrid(x, y)
     positions = np.hstack([xv.ravel()[:,np.newaxis], yv.ravel()[:,np.newaxis]])
 
@@ -51,7 +51,8 @@ def grid_from_corners(corners, n_points):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--csv", type=str, required=True)
-    parser.add_argument("-n", "--n_points", type=int, required=True)
+    parser.add_argument("-e", "--ew_points", type=int, required=True)
+    parser.add_argument("-n", "--ns_points", type=int, required=True)
     parser.add_argument("-o", "--out_file", type=str, default=None)
 
     args = parser.parse_args()
@@ -60,9 +61,11 @@ def main():
         print("couldnt find csv_file, exiting")
         os._exit(1)
 
-    print(f"Laying out grid based on four corners of {args.n_points} points per line.")
+    print(f"Laying out grid based on four corners with {args.ew_points} points in east-west direction and {args.ns_points} in north-south direction.")
     print(f'INFO: This method "squeezes" a perfectly rectangular grid into the quadriliteral formed by the four corners. If the plot is very crooked, scan positions might be a bit sparse at the extremes.' )
-    
+    print(f"The east west direction will be determined by the edge between corners the most sw point and the most se point.")
+    print(f"If the result is opposite then expected, just switch around the ew_points and ns_points args")
+
     df = pd.read_csv(args.csv)
 
     if len(df.index) < 4:
@@ -72,18 +75,10 @@ def main():
         print(f"WARNING: CSV file contains more than 4 rows ({len(df.index)}), using first 4")
         df = df.head(4)
 
-    # TODO: get four corners out
     df_corners = df[["Easting", "Northing"]].values
     df_elevation = df[["Elevation"]].values[0][0]
 
-    coords = grid_from_corners(df_corners, args.n_points)
-
-    # DEBUG
-    # print(coords)
-    # plt.axis('equal')
-    # plt.scatter(coords[:,0], coords[:,1])
-    # # plt.scatter(df_corners[:,0], df_corners[:,1], color="r")
-    # plt.show()
+    coords = grid_from_4_corners(df_corners, args.ew_points, args.ns_points)
 
     # add dummy elevation
     elevation_arr = np.ones((len(coords),1)) * df_elevation
