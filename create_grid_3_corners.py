@@ -47,7 +47,7 @@ def main():
         print("couldnt find csv_file, exiting")
         os._exit(1)
 
-    print(f"Laying out grid based on four corners with {args.ew_points} points in east-west direction and {args.ns_points} in north-south direction.")
+    print(f"Laying out grid based on three corners with {args.ew_points} points in east-west direction and {args.ns_points} in north-south direction.")
     print(f'INFO: This method generates a four corner, then squeezes grid into quadriliteral formed by these corners')
     print(f"The east west direction will be determined by the edge between corners the most sw point and the most se point.")
     print(f"If the result is opposite then expected, just switch around the ew_points and ns_points args")
