@@ -53,6 +53,7 @@ python create_grid_2_corners.py --csv /path/to/csvfile --gridsize GRIDSIZE --n_p
 - (optional) -o/--out_file: path of output file
 
 > NOTE: This method generates the grid by using the two first points as one axis and projecting a second axis pependicular to this edge. Note that the gridsize is only used for the perpendicular edge, the points along the given edge will be spaced equally along the edge. Actual gridsize along this edge will be printed out.
+
 > NOTE: By default, projects to right side of vector from first to second corner. To project to other side, use --project_inverse option.
 
 
@@ -65,6 +66,9 @@ python create_grid_3_corners.py --csv /path/to/csvfile --ew_points EW_POINTS --n
 - -c/--csv: path to exported csv file
 - -e/--ew_points: desired number of points in East/West direction
 - -n/--ns_points: desired number of points in North/South direction
+- (optional) -i/--inner_index: index of inner corner point
 - (optional) -o/--out_file: path of output file
 
 > NOTE: This method generates the fourth corner by summing the vectors of both edges, then calls the 4 corner grid generation.
+
+> NOTE: The inner crom from which to project will be determined as the corner with the largest angle in the triangle formed by the 3 corners. In a very parallelogram-shaped plot, this might not give the desired plot, in which case you can give the index (1,2 or 3) of the inner corner point using the -i/--inner_index parameter.
