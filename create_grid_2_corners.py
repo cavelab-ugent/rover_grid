@@ -11,32 +11,27 @@ def unit_vector(vector):
 
 def angle_between(v1, v2):
     """ Returns the angle in radians between vectors 'v1' and 'v2'::
-
-            >>> angle_between((1, 0, 0), (0, 1, 0))
-            1.5707963267948966
-            >>> angle_between((1, 0, 0), (1, 0, 0))
-            0.0
-            >>> angle_between((1, 0, 0), (-1, 0, 0))
-            3.141592653589793
     """
     v1_u = unit_vector(v1)
     v2_u = unit_vector(v2)
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 def grid_from_2_corners(corners, grid_size, n_point_along, n_points_projection, project_inverse=False):
+    # first translate to origin
+    corners_translated = corners - corners[0]
 
-    # PLAN: rotate around first point to align with y-axis
-    vector_edge = corners[1] - corners[0]
+    # get angle between y-axis and edge from corner 1 to corner 2
+    vector_edge = corners_translated[1] - corners_translated[0]
     vector_y_axis = [0,1]
+    angle = angle_between(vector_edge, vector_y_axis)
 
-    angle = -angle_between(vector_edge, vector_y_axis)
-
+    # rotate so edge 1-2 is aligned with y-axis
     c = m.cos(angle)
     s = m.sin(angle)
     matrix = np.array([[c,s], [-s, c]])
-    corners_rotated = np.matmul(matrix, corners.T).T
+    corners_rotated = np.matmul(matrix, corners_translated.T).T
 
-    # layout grid aligned
+    # layout grid aligned with x,y
     if project_inverse:
         easting_array = np.arange(corners_rotated[0][0] - n_points_projection*grid_size, corners_rotated[0][0], grid_size)
     else:
@@ -47,12 +42,14 @@ def grid_from_2_corners(corners, grid_size, n_point_along, n_points_projection, 
     # convert edge arrays to coordinate grid
     xv, yv = np.meshgrid(easting_array, northing_array)
     coords = np.array([xv.flatten(), yv.flatten()]).T
-    
+
     # then rotate with opposite angle as in initial rotation (see one point method!)
     coords = np.matmul(matrix.T, coords.T).T
 
-    return coords
+    # retranslate coordinates
+    coords = coords + corners[0]
 
+    return coords
 
 
 
